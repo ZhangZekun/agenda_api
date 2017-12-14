@@ -5,4 +5,4 @@ go:
   - master
 
 script:
-    - go test -v ./test_test.go
+    - go test -v test_test.go
