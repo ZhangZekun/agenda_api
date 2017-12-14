@@ -1,0 +1,258 @@
+FORMAT: 1A
+
+# Agenda API文档
+
+# User 管理
+
+## Agenda-User 登录[POST /agenda/user/login{?username, password}]
+
++ Parameters
+    + username (string, required)
+    + password (string, required)
+
++ Response 200 (application/json)
+    {
+      "message":"success",
+      "data": {
+        "username":"",
+        "email":"",
+        "phone":""
+      }
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-User 注册[POST /agenda/user/registing{?username, password, email, phone}]
+
++ Parameters
+    + username (string, required)
+    + password (string, required)
+    + email (string, required)
+    + phone (string, required)
+
++ Response 200 (application/json)
+    {
+      "message":"success",
+      "data": {
+        "username":"",
+        "emial":"",
+        "phone":""
+      }
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-User 登出[POST /agenda/user/logout{?username}]
+
++ Response 200 (application/json)
+    {
+      "message":"success"
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-User 查询[GET /agenda/user/quering{?currentusername}]
+
++ Parameters
+    + currentusername (string, required)
+
++ Response 200 (application/json)
+    {
+      "message":"success",
+      "data": {
+        "uselist":{
+          "username":{
+            "username":"",
+            "email":"",
+            "phone":""
+          },
+        }
+      }
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-User 删除[POST /agenda/user/deleting{?username}]
+
++ Response 200 (application/json)
+    {
+      "message":"success"
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+
+# Meeting 管理
+
+## Agenda-Meeting 创建会议[POST /agenda/meeting/creating{?username, title, participators, starttime, endtime}]
+
++ Parameters
+    + username (string, required)
+    + title (string, required)
+    + participators (string[], required)
+    + starttime (string, required)
+    + endtime (string, required)
+
++ Response 200 (application/json)
+    {
+      "message":"success",
+      "data": {
+        "title":"",
+        "sponser":"",
+        "participators":[],
+        "starttime":"",
+        "endtime":""
+      }
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-Meeting 增删会议参与者[POST /agenda/meeting/changing{?username, title, participator}]
+
++ Parameters
+    + username (string, required)
+    + title (string, required)
+    + participator (string[], required)
+
++ Response 200 (application/json)
+    {
+      "message":"success",
+      "data": {
+        "title":"",
+        "sponser":"",
+        "participator":[],
+        "starttime":"",
+        "endtime":""
+      }
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-Meeting 查询会议[GET /agenda/meeting/quering{?username, starttime, endtime}]
+
++ Parameters
+    + username (string, required)
+    + starttime (string, required)
+    + endtime (string, required)
+
++ Response 200 (application/json)
+    {
+      "message":"success",
+      "data": {
+        "meetinglist":{
+          "title":{
+            "title":"",
+            "sponser":"",
+            "participator":[],
+            "starttime":"",
+            "endtime":""
+          },
+        }
+      }
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-Meeting 取消[POST /agenda/meeting/cancelling{?username, title}]
+
++ Parameters
+    + username (string, required)
+    + title (string, required)
+
++ Response 200 (application/json)
+    {
+      "message":"success"
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-Meeting 退出[POST /agenda/meeting/quiting{?username, title}]
+
++ Parameters
+    + username (string, required)
+    + title (string, required)
+
++ Response 200 (application/json)
+    {
+      "message":"success"
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
+
+## Agenda-Meeting 清空[POST /agenda/meeting/deletingall{?username}]
+
++ Parameters
+    + username (string, required)
+
++ Response 200 (application/json)
+    {
+      "message":"success"
+    }
+
++ Response 400 (application/json)
+    {
+      "message": "fail",
+      "data": {
+        "error":""
+      }
+    }
