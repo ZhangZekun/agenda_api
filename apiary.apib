@@ -1,104 +1,264 @@
 FORMAT: 1A
 
-# Agenda API文档
+# Agenda API
 
-# User 管理
+## Group User
 
-## Agenda-User 登录[POST /agenda/user/login{?username, password}]
-
-+ Parameters
-    + username (string, required)
-    + password (string, required)
+### Agenda-User Get All User Api [GET /api/agenda/user]
 
 + Response 200 (application/json)
+
+  + Body
+
     {
-      "message":"success",
-      "data": {
-        "username":"",
-        "email":"",
-        "phone":""
-      }
+      "is_login_api":"/api/agenda/user/login{?userid}",
+      "login_aoi":"/api/agenda/user/login",
+      "register_api":"/api/agenda/user/register",
+      "logout_api":"/api/agenda/user/logout",
+      "delete_api":"/api/agenda/user/self",
+      "query_api":"/api/agenda/users"
     }
 
 + Response 400 (application/json)
-    {
-      "message": "fail",
-      "data": {
-        "error":""
-      }
-    }
 
-## Agenda-User 注册[POST /agenda/user/registing{?username, password, email, phone}]
+  + Body
+
+  {
+    "message": "get user api fail",
+    "data": {
+      "error":"error_message"
+    }
+  }
+
+### Agenda-User Is Login [Get /api/agenda/user/login{?userid}]
 
 + Parameters
-    + username (string, required)
-    + password (string, required)
-    + email (string, required)
-    + phone (string, required)
+
+  + userid (string, required)
 
 + Response 200 (application/json)
+
+  + Body
+
     {
-      "message":"success",
-      "data": {
-        "username":"",
-        "emial":"",
-        "phone":""
+      "username": "test"
+    }
+
+  + Response 400 (application/json)
+
+    + Body
+
+      {
+        "message":"no login"
       }
+
+### Agenda-User Login [POST /api/agenda/user/login]
+
++ Request(application/json)
+
+  + Body
+
+    {
+      "username": "test",
+      "password": "12345678"
+    }
+
++ Response 200 (application/json)
+
+  + Body
+
+    {
+      "message":"login success"
     }
 
 + Response 400 (application/json)
+
+  + Body
+
     {
-      "message": "fail",
+      "message": "login fail",
       "data": {
-        "error":""
+        "error":"error_message"
       }
     }
 
-## Agenda-User 登出[POST /agenda/user/logout{?username}]
+### Agenda-User Register [POST /api/agenda/user/register]
+
++ Request (application/json)
+
+  + Body
+
+    {
+      "username":"test",
+      "passqord":"12345678",
+      "email":"test@163.com",
+      "phone":"12345679101"
+    }
 
 + Response 200 (application/json)
+
+  + Header
+
+    + Location: /api/agenda/user/login
+
+  + Body
+
     {
-      "message":"success"
+      "message":"register success"
     }
 
 + Response 400 (application/json)
+
+  + Body
+
     {
-      "message": "fail",
+      "message": "register fail",
       "data": {
-        "error":""
+        "error":"error_message"
       }
     }
 
-## Agenda-User 查询[GET /agenda/user/quering{?currentusername}]
-
-+ Parameters
-    + currentusername (string, required)
+### Agenda-User Logout [POST /api/agenda/user/logout]
 
 + Response 200 (application/json)
+
+    + Header
+
+      + Location: /api/agenda/login
+
+    + Response
+
+      + Body
+
+        {
+          "message":"logout success"
+        }
+
++ Response 400 (application/json)
+
+  + Body
+
     {
-      "message":"success",
+      "message": "fail",
+      "data": {
+        "error":"error_message"
+      }
+    }
+
+### Agenda-User Show Users [GET /api/agenda/users]
+
++ Response 200 (application/json)
+
+  + Body
+
+    {
+      "message":"query users success",
       "data": {
         "uselist":{
-          "username":{
-            "username":"",
-            "email":"",
-            "phone":""
+          "test1":{
+            "username":"test1",
+            "email":"test1@163.com",
+            "phone":"12345679101"
+          },
+          "test2":{
+            "username":"test2",
+            "email":"test2@163.com",
+            "phone":"12345679102"
+          },
+          "test3":{
+            "username":"test3",
+            "email":"test3@163.com",
+            "phone":"12345679103"
           },
         }
       }
     }
 
 + Response 400 (application/json)
+
+  + Body
+
     {
-      "message": "fail",
+      "message": "query users fail",
       "data": {
-        "error":""
+        "error":"error_message"
       }
     }
 
-## Agenda-User 删除[POST /agenda/user/deleting{?username}]
+### Agenda-User Delete [DELETE /api/agenda/user/self]
 
 + Response 200 (application/json)
+
+  + Header
+
+    Location: /api/agenda/user/login
+
+  + Response
+
+    + Body
+
+      {
+        "message":"delete success"
+      }
+
++ Response 400 (application/json)
+
+  + Body
+
+    {
+      "message": "fail",
+      "data": {
+        "error":"error_message"
+      }
+    }
+
+
+## Group Meeting
+
+### Agenda-Meeting Get All Meeting-Api [GET /api/agenda/meeting]
+
++ Response 200 (application/json)
+
+  + Body
+
+    {
+      "create_meeting":"/api/agenda/meeting",
+      "add_participators":"/api/agenda/meeting/{title}/participators",
+      "delete_participators":"/api/agenda/meeting/{title}/participators",
+      "qurey_meetings":"/api/agenda/meeting{?starttime, endtime}",
+      "cancel_meeting":"/api/agenda/meeting/sponser/{title}",
+      "quit_meeting":"/api/agenda/meeting/participator/{title}",
+      "delete_allmeeting":"/api/agenda/meeting/sponsers/all"
+    }
+
+  + Response 400 (application/json)
+
+    + Body
+
+    {
+      "message": "get meeting api fail",
+      "data": {
+        "error":"error_message"
+      }
+    }
+
+
+### Agenda-Meeting Create [POST /api/agenda/meeting]
+
++ Request (application/json)
+
+  + Body
+
+    {
+      "title":"test_title",
+      "participators":["test1_participator1", "test1_participator2", "test1_participator3"],
+      "starttime":"2017-12-10 10:00:00",
+      "endtime":"2017-12-11 11:00:00"
+    }
+
++ Response 200 (application/json)
+
+  + Body
     {
       "message":"success"
     }
@@ -107,100 +267,117 @@ FORMAT: 1A
     {
       "message": "fail",
       "data": {
-        "error":""
+        "error":"error_message"
       }
     }
 
+### Agenda-Meeting Add Participators [POST /api/agenda/meeting/{title}/participators]
 
-# Meeting 管理
++ Request (application/json)
 
-## Agenda-Meeting 创建会议[POST /agenda/meeting/creating{?username, title, participators, starttime, endtime}]
+  + Body
+
+    {
+      "participators":["test_participator1", "test_participator2", "test_participator3"]
+    }
+
++ Response 200 (application/json)
+
+  + Body
+
+    {
+      "message":"add participators success"
+    }
+
++ Response 400 (application/json)
+
+  + Body
+
+    {
+      "message": "add participators fail",
+      "data": {
+        "error":"error_message"
+      }
+    }
+
+### Agenda-Meeting Delete Participators [DELETE /api/agenda/meeting/{title}/participators]
+
++ Request (application/json)
+
+  + Body
+
+    {
+      "participators":["test_participator1", "test_participator2", "test_participator3"]
+    }
+
++ Response 200 (application/json)
+
+  + Body
+
+    {
+      "message":"delete participators success"
+    }
+
++ Response 400 (application/json)
+
+  + Body
+
+    {
+      "message": "deltete participators fail",
+      "data": {
+        "error":"error_message"
+      }
+    }
+
+### Agenda-Meeting Query [GET /api/agenda/meeting{?starttime, endtime}]
 
 + Parameters
-    + username (string, required)
-    + title (string, required)
-    + participators (string[], required)
     + starttime (string, required)
     + endtime (string, required)
 
 + Response 200 (application/json)
+
+  + Body
+
     {
-      "message":"success",
-      "data": {
-        "title":"",
-        "sponser":"",
-        "participators":[],
-        "starttime":"",
-        "endtime":""
-      }
-    }
-
-+ Response 400 (application/json)
-    {
-      "message": "fail",
-      "data": {
-        "error":""
-      }
-    }
-
-## Agenda-Meeting 增删会议参与者[POST /agenda/meeting/changing{?username, title, participator}]
-
-+ Parameters
-    + username (string, required)
-    + title (string, required)
-    + participator (string[], required)
-
-+ Response 200 (application/json)
-    {
-      "message":"success",
-      "data": {
-        "title":"",
-        "sponser":"",
-        "participator":[],
-        "starttime":"",
-        "endtime":""
-      }
-    }
-
-+ Response 400 (application/json)
-    {
-      "message": "fail",
-      "data": {
-        "error":""
-      }
-    }
-
-## Agenda-Meeting 查询会议[GET /agenda/meeting/quering{?username, starttime, endtime}]
-
-+ Parameters
-    + username (string, required)
-    + starttime (string, required)
-    + endtime (string, required)
-
-+ Response 200 (application/json)
-    {
-      "message":"success",
+      "message":"query meetings success",
       "data": {
         "meetinglist":{
-          "title":{
-            "title":"",
-            "sponser":"",
-            "participator":[],
-            "starttime":"",
-            "endtime":""
+          "test_title1": {
+            "title":"test_title1",
+            "sponser":"tset_sponser1",
+            "participators":["test1_participator", "test2_participator", "test3_participator"],
+            "starttime":"2017-12-10 10:00:00",
+            "endtime":"2017-12-10 11:00:00"
           },
+          "test_title2": {
+            "title":"test_title2",
+            "sponser":"tset_sponser2",
+            "participators":["test1_participator", "test2_participator", "test3_participator"],
+            "starttime":"2017-12-11 10:00:00",
+            "endtime":"2017-12-11 11:00:00"
+          },
+          "test_title3": {
+            "title":"test_title3",
+            "sponser":"tset_sponser3",
+            "participators":["test1_participator", "test2_participator", "test3_participator"],
+            "starttime":"2017-12-12 10:00:00",
+            "endtime":"2017-12-12 11:00:00"
+          }
         }
       }
     }
 
 + Response 400 (application/json)
+
+  + Body
+
     {
-      "message": "fail",
+      "message": "query meetings fail",
       "data": {
-        "error":""
+        "error":"error_message"
       }
     }
-
 
 ### Agenda-Meeting Cancel [DELETE /api/agenda/meeting/sponser/{title}]
 
@@ -223,38 +400,44 @@ FORMAT: 1A
       }
     }
 
-
-+ Parameters
-    + username (string, required)
-    + title (string, required)
+### Agenda-Meeting Quit [DELETE /api/agenda/meeting/participator/{title}]
 
 + Response 200 (application/json)
+
+  + Body
+
     {
-      "message":"success"
+      "message":"quit meeting success"
     }
 
 + Response 400 (application/json)
+
+  + Body
+
     {
-      "message": "fail",
+      "message": "quit meeting fail",
       "data": {
-        "error":""
+        "error":"error_message"
       }
     }
 
 ### Agenda-Meeting Delete All [DELETE /api/agenda/meeting/sponser/all]
 
-+ Parameters
-    + username (string, required)
-
 + Response 200 (application/json)
+
+  + Body
+
     {
-      "message":"success"
+      "message":"delete all meetings success"
     }
 
 + Response 400 (application/json)
+
+  + Body
+
     {
-      "message": "fail",
+      "message": "deltet all meetings fail",
       "data": {
-        "error":""
+        "error":"error_message"
       }
     }
