@@ -201,7 +201,28 @@ FORMAT: 1A
       }
     }
 
-## Agenda-Meeting 取消[POST /agenda/meeting/cancelling{?username, title}]
+
+### Agenda-Meeting Cancel [DELETE /api/agenda/meeting/sponser/{title}]
+
++ Response 200 (application/json)
+
+  + Body
+
+    {
+      "message":"cancel meeting success"
+    }
+
++ Response 400 (application/json)
+
+  + Body
+
+    {
+      "message": "cancel meeting fail",
+      "data": {
+        "error":"error_message"
+      }
+    }
+
 
 + Parameters
     + username (string, required)
@@ -220,26 +241,7 @@ FORMAT: 1A
       }
     }
 
-## Agenda-Meeting 退出[POST /agenda/meeting/quiting{?username, title}]
-
-+ Parameters
-    + username (string, required)
-    + title (string, required)
-
-+ Response 200 (application/json)
-    {
-      "message":"success"
-    }
-
-+ Response 400 (application/json)
-    {
-      "message": "fail",
-      "data": {
-        "error":""
-      }
-    }
-
-## Agenda-Meeting 清空[POST /agenda/meeting/deletingall{?username}]
+### Agenda-Meeting Delete All [DELETE /api/agenda/meeting/sponser/all]
 
 + Parameters
     + username (string, required)
