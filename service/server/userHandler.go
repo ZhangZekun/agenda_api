@@ -5,6 +5,8 @@ import (
 	"github.com/unrolled/render"
 )
 
+
+
 func isLoginHandler(formatter *render.Render) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request) {
 

@@ -1,11 +1,9 @@
-package databaseService
+package service
 
 import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
-	"github.com/go-xorm/xorm"
-	"time"
-)
+	"github.com/go-xorm/xorm")
 
 var Enginea *xorm.Engine
 

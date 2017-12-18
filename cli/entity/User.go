@@ -1,4 +1,4 @@
-package User
+package entity
 
 import (
 	"agenda_api/cli/service/databaseService"
