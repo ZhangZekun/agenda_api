@@ -1,8 +1,6 @@
-package service
+package server
 
 import (
-	"net/http"
-
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
