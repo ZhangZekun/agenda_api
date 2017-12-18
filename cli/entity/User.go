@@ -1,7 +1,7 @@
 package User
 
 import (
-	"agenda/server/databaseService"
+	"agenda_api/cli/service/databaseService"
 	"bufio"
 	"encoding/json"
 	"fmt"
