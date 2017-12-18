@@ -379,26 +379,26 @@ FORMAT: 1A
       }
     }
 
-    ### Agenda-Meeting Cancel [DELETE /api/agenda/meeting/sponser/{title}]
+### Agenda-Meeting Cancel [DELETE /api/agenda/meeting/sponser/{title}]
 
-    + Response 200 (application/json)
++ Response 200 (application/json)
 
-      + Body
+  + Body
 
-        {
-          "message":"cancel meeting success"
-        }
+    {
+      "message":"cancel meeting success"
+    }
 
-    + Response 400 (application/json)
++ Response 400 (application/json)
 
-      + Body
+  + Body
 
-        {
-          "message": "cancel meeting fail",
-          "data": {
-            "error":"error_message"
-          }
-        }
+    {
+      "message": "cancel meeting fail",
+      "data": {
+        "error":"error_message"
+      }
+    }
 
 ### Agenda-Meeting Quit [DELETE /api/agenda/meeting/participator/{title}]
 
@@ -421,7 +421,7 @@ FORMAT: 1A
       }
     }
 
-### Agenda-Meeting Delete All [DELETE /api/agenda/meeting/sponsers/all]
+### Agenda-Meeting Delete All [DELETE /api/agenda/meeting/sponser/all]
 
 + Response 200 (application/json)
 
