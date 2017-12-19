@@ -1,7 +1,7 @@
 package entity
 
 type Session struct{
-	Currentuser  string
+	Currentuser  string `xorm:"pk"`
 }
 
 func NewSession(s Session) *Session {

@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"agenda_api/cli/service/databaseService"
 	"bufio"
 	"encoding/json"
 	"fmt"
@@ -22,17 +21,17 @@ type User struct {
 }
 
 //register the user with name, password, email
-func Register_user(user *User) error {
-	if _, ok := AllUserInfo[user.Username]; !ok {
-		AllUserInfo[user.Username] = *user
-		os.Stdout.WriteString("[agenda][info] " + user.Username + " registed succeed!\n")
-		logger.Printf("[agenda][info] " + user.Username + " registed succeed\n")
-	} else {
-		os.Stdout.WriteString("[agenda][warning]The userName " + user.Username + " have been registered\n")
-		return
-	}
-	fout.Write(b)
-}
+// func Register_user(user *User) error {
+// 	if _, ok := AllUserInfo[user.Username]; !ok {
+// 		AllUserInfo[user.Username] = *user
+// 		os.Stdout.WriteString("[agenda][info] " + user.Username + " registed succeed!\n")
+// 		logger.Printf("[agenda][info] " + user.Username + " registed succeed\n")
+// 	} else {
+// 		os.Stdout.WriteString("[agenda][warning]The userName " + user.Username + " have been registered\n")
+// 		return
+// 	}
+// 	fout.Write(b)
+// }
 
 //search all user
 func Search_all_user() {
