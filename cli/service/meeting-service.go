@@ -16,9 +16,9 @@ var MeetingInfoService = MeetingInfoAtomicService{}
 
 
 //InsertAUser
-func (*MeetingInfoAtomicService) InsertMeeting(username string, meeting entity.Meeting) error {
+func (*MeetingInfoAtomicService) InsertMeeting(session entity.Session, meeting entity.Meeting) error {
 	//check if log in 
-	if login:=UserInfoService.UserHasLogin(username); login==false {
+	if login:=UserInfoService.UserHasLogin(session.LoginId); login==false {
 		err:= errors.New("You haven't log in!")
 		return err
 	}
@@ -34,7 +34,7 @@ func (*MeetingInfoAtomicService) InsertMeeting(username string, meeting entity.M
     entity.CheckErr(err)
 
     dao := dao.MeetingInfoDao{tx}
-    err = dao.InsertMeeting(username, meeting)
+    err = dao.InsertMeeting(session.CurrentUser, meeting)
 
     if err == nil {
         tx.Commit()
@@ -47,8 +47,8 @@ func (*MeetingInfoAtomicService) InsertMeeting(username string, meeting entity.M
 
 //query all meeting infomation betwwen startTime and endTime for login user
 //this is used for http server!
-func (*MeetingInfoAtomicService) GetAllMeetingBetweenStartTimeAndEndTimeOfLoginUser(username string , startTime time.Time, endTime time.Time) ([]entity.Meeting, error) {
-	if login:=UserInfoService.UserHasLogin(username); login==false {
+func (*MeetingInfoAtomicService) GetAllMeetingBetweenStartTimeAndEndTimeOfLoginUser(session entity.Session , startTime time.Time, endTime time.Time) ([]entity.Meeting, error) {
+	if login:=UserInfoService.UserHasLogin(session.LoginId); login==false {
 		err:= errors.New("You haven't log in!")
 		return nil, err
 	}

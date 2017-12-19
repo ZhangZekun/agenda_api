@@ -36,12 +36,12 @@ func (*UserInfoAtomicService) InsertUser(user entity.User) error {
 }
 
 //Insert Login Info 
-func (*UserInfoAtomicService) LoginInfoInsert(username string) error {
+func (*UserInfoAtomicService) LoginInfoInsert(session entity.Session) error {
     tx, err := entity.Mydb.Begin()
     entity.CheckErr(err)
 
     dao := dao.UserInfoDao{tx}
-    err = dao.LoginInfoInsert(username)
+    err = dao.LoginInfoInsert(session)
 
     if err == nil {
         tx.Commit()
@@ -53,12 +53,12 @@ func (*UserInfoAtomicService) LoginInfoInsert(username string) error {
 }
 
 //delete User's log in infomation by username
-func (*UserInfoAtomicService) LoginInfoDelete(username string) error {
+func (*UserInfoAtomicService) LoginInfoDelete(session entity.Session) error {
     tx, err := entity.Mydb.Begin()
     entity.CheckErr(err)
 
     dao := dao.UserInfoDao{tx}
-    err = dao.LoginInfoDelete(username)
+    err = dao.LoginInfoDelete(session)
 
     if err == nil {
         tx.Commit()
@@ -69,13 +69,14 @@ func (*UserInfoAtomicService) LoginInfoDelete(username string) error {
     return nil
 }
 //determine whether a user has been logged in by username or not
-func (*UserInfoAtomicService) UserHasLogin(name string) bool {
+func (*UserInfoAtomicService) UserHasLogin(loginid string) bool {
     dao := dao.UserInfoDao{entity.Mydb}
-    return dao.UserHasLogin(name)
+    session, _ := dao.UserHasLogin(loginid)
+    return session != nil
 }
 
 //get all users' infomation
-func (*UserInfoAtomicService) GetAllUsersInfo(name string) ([]entity.User, error) {
+func (*UserInfoAtomicService) GetAllUsersInfo(session entity.Session) ([]entity.User, error) {
     dao := dao.UserInfoDao{entity.Mydb}
-    return dao.GetAllUsersInfo(name)
+    return dao.GetAllUsersInfo(session)
 }

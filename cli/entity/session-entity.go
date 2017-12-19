@@ -1,11 +1,12 @@
 package entity
 
 type Session struct{
-	Currentuser  string `xorm:"pk"`
+	LoginId  string `xorm:"pk"`
+	CurrentUser string
 }
 
 func NewSession(s Session) *Session {
-	if len(s.Currentuser) == 0 {
+	if len(s.LoginId) == 0 {
 		panic("You have not logged in!")
 	}
 	return &s
