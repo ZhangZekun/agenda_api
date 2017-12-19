@@ -7,7 +7,6 @@ import (
 
 func createMeetingHandler(formatter *render.Render) http.HandlerFunc{
 	return func(w http.ResponseWriter, r *http.Request){
-
 	}
 }
 

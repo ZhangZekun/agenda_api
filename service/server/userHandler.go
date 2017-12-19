@@ -3,20 +3,22 @@ package server
 import (
 	"net/http"
 	"github.com/unrolled/render"
+	"agenda_api/cli/service"
+	"agenda_api/cli/entity"
 )
 
 
 
 func isLoginHandler(formatter *render.Render) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request) {
-
+		cookie, err := req.Cookie("LoginId")
+		service.UserInfoService.UserHasLogin(cookie.Value)
 	}
 }
 
 
 func loginHandler(formatter *render.Render) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
-
 	}
 }
 

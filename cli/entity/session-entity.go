@@ -6,8 +6,8 @@ type Session struct{
 }
 
 func NewSession(s Session) *Session {
-	if len(s.LoginId) == 0 {
-		panic("You have not logged in!")
+	if len(s.CurrentUser) == 0 {
+		panic("You have not enter your name!")
 	}
 	return &s
 }

@@ -10,7 +10,7 @@ var Mydb *sql.DB
 
 func init() {
     //https://stackoverflow.com/questions/45040319/unsupported-scan-storing-driver-value-type-uint8-into-type-time-time
-    db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/agenda?charset=utf8&parseTime=true")
+    db, err := sql.Open("mysql", "root:zzm15331411@tcp(localhost:3306)/agenda?charset=utf8&parseTime=true")
     if err != nil {
         panic(err)
     }

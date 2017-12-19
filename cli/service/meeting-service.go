@@ -18,7 +18,7 @@ var MeetingInfoService = MeetingInfoAtomicService{}
 //InsertAUser
 func (*MeetingInfoAtomicService) InsertMeeting(session entity.Session, meeting entity.Meeting) error {
 	//check if log in 
-	if login:=UserInfoService.UserHasLogin(session.LoginId); login==false {
+	if login, _:=UserInfoService.UserHasLogin(session.LoginId); login==nil {
 		err:= errors.New("You haven't log in!")
 		return err
 	}
@@ -48,7 +48,7 @@ func (*MeetingInfoAtomicService) InsertMeeting(session entity.Session, meeting e
 //query all meeting infomation betwwen startTime and endTime for login user
 //this is used for http server!
 func (*MeetingInfoAtomicService) GetAllMeetingBetweenStartTimeAndEndTimeOfLoginUser(session entity.Session , startTime time.Time, endTime time.Time) ([]entity.Meeting, error) {
-	if login:=UserInfoService.UserHasLogin(session.LoginId); login==false {
+	if login, _:=UserInfoService.UserHasLogin(session.LoginId); login==nil {
 		err:= errors.New("You haven't log in!")
 		return nil, err
 	}

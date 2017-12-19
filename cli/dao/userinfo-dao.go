@@ -84,6 +84,7 @@ func (dao *UserInfoDao) LoginInfoInsert(session entity.Session) error {
             break
         }
     }
+    session.LoginId = loginId
     stmt, err := dao.Prepare(userLoginInfoInsertStmt)
 	entity.CheckErr(err)
 	if err != nil {
