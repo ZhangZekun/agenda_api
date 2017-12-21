@@ -2,6 +2,9 @@ language: go
 
 go:
   - 1.8
+  - master
+
+sudo: required
 
 script:
   - go test -v ./cli/test
