@@ -2,7 +2,7 @@ package dao
 import (
 //		"errors"
 		"time"
-		"entity"
+		"github.com/ZhangZeMian/agenda_api/cli/entity"
 	)
 
 type MeetingInfoDao entity.DaoSource
