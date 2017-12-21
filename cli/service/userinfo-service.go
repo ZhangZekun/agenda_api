@@ -8,6 +8,7 @@ import (
 //UserInfoAtomicService .
 type UserInfoAtomicService struct{}
 
+
 //UserInfoService .
 var UserInfoService = UserInfoAtomicService{}
 
