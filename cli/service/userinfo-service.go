@@ -1,8 +1,8 @@
 package service
 
 import (
-    "agenda_api/cli/entity"
-    "agenda_api/cli/dao"
+    "entity"
+    "dao"
 )
 
 //UserInfoAtomicService .
