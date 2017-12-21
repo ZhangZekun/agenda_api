@@ -2,8 +2,7 @@ package dao
 import (
         "errors"
         "agenda_api/cli/entity"
-        "github.com/satori/go.uuid"
-	)
+    	)
 
 type UserInfoDao entity.DaoSource
 
@@ -74,17 +73,6 @@ func (dao *UserInfoDao) LoginInfoInsert(session entity.Session) error {
         err := errors.New("You have logged in already, no need to log in again");
 		return err
     }
-    
-    var loginId string
-    for {
-        loginId_uuid := uuid.NewV4()
-        loginId = loginId_uuid.String()
-        session,_ := dao.UserHasLogin(loginId)
-        if session == nil {
-            break
-        }
-    }
-    session.LoginId = loginId
     stmt, err := dao.Prepare(userLoginInfoInsertStmt)
 	entity.CheckErr(err)
 	if err != nil {

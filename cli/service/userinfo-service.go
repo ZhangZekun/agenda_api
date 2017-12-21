@@ -71,8 +71,8 @@ func (*UserInfoAtomicService) LoginInfoDelete(session entity.Session) error {
 //determine whether a user has been logged in by username or not
 func (*UserInfoAtomicService) UserHasLogin(loginid string) (*entity.Session, error) {
     dao := dao.UserInfoDao{entity.Mydb}
-    session, error := dao.UserHasLogin(loginid)
-    return session, error
+    session, err := dao.UserHasLogin(loginid)
+    return session, err
 }
 
 //get all users' infomation
