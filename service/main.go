@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"agenda_api/service"
+	"agenda_api/service/server"
 	flag "github.com/spf13/pflag"
 )
 
@@ -22,6 +22,6 @@ func main() {
 		port = *pPort
 	}
 
-	server := service.NewServer()
+	server := server.NewServer()
 	server.Run(":" + port)
 }

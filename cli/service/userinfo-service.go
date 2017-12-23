@@ -1,8 +1,8 @@
 package service
 
 import (
-    "github.com/ZhangZeMian/agenda_api/cli/entity"
-    "github.com/ZhangZeMian/agenda_api/cli/dao"
+    "agenda_api/cli/entity"
+    "agenda_api/cli/dao"
 )
 
 //UserInfoAtomicService .
@@ -71,8 +71,8 @@ func (*UserInfoAtomicService) LoginInfoDelete(session entity.Session) error {
 }
 //determine whether a user has been logged in by username or not
 func (*UserInfoAtomicService) UserHasLogin(loginid string) (*entity.Session, error) {
-    dao := dao.UserInfoDao{entity.Mydb}
-    session, err := dao.UserHasLogin(loginid)
+    dao1 := dao.UserInfoDao{entity.Mydb}
+    session, err := dao1.UserHasLogin(loginid)
     return session, err
 }
 

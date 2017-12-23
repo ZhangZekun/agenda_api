@@ -38,7 +38,7 @@ var sqlCreateMeetingTable string =
 
 func init() {
     //https://stackoverflow.com/questions/45040319/unsupported-scan-storing-driver-value-type-uint8-into-type-time-time
-    db, err := sql.Open("sqlite3", "../data/agenda.db")
+    db, err := sql.Open("sqlite3", "agenda.db")
     CheckErr(err)
 
     db.Exec(sqlCreateUserTable)
