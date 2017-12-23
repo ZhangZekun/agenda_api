@@ -22,6 +22,7 @@ var successMsg struct{
 
 func isLoginHandler(formatter *render.Render) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request) {
+		failMsg.Data.Error = "login fail"
 		cookie, err := req.Cookie("LoginId")
 		if err != nil{
 			failMsg.Data.Error = err.Error()
@@ -39,8 +40,10 @@ func isLoginHandler(formatter *render.Render) http.HandlerFunc{
 			if user != nil {
 				var successMsg struct{
 					Username string
+					LoginId string
 				}
 				successMsg.Username = user.Username
+				successMsg.LoginId = cookie.Value
 				formatter.JSON(w, http.StatusOK, successMsg)
 			} else {
 				var failMsg struct{
@@ -82,7 +85,7 @@ func loginHandler(formatter *render.Render) http.HandlerFunc{
 		}
 
 		if err := json.NewDecoder(req.Body).Decode(&reqBody); err != nil{
-			failMsg.Data.Error = "[LoginHandler][IsUserExits]:"+ "the user did not exist"
+			failMsg.Data.Error = "[LoginHandler][DecodeRequest]:"+err.Error()
 			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
 			return
 		}
@@ -90,31 +93,36 @@ func loginHandler(formatter *render.Render) http.HandlerFunc{
 		//login
 		user, err4 := service.UserInfoService.FindByUsername(reqBody.Username)
 		if err4 != nil {
-			failMsg.Data.Error = "[LoginHandler][DecodeRequest]:"+err4.Error()
+			failMsg.Data.Error = "[LoginHandler][IsUserExits]:"+ "the user did not exist"
 			formatter.JSON(w, http.StatusBadRequest, failMsg)
 			return
 		}
 		if user!= nil && user.Password == reqBody.Password{
-			err2 := service.UserInfoService.InsertUser(*user)
-			if err2 != nil {
-				failMsg.Data.Error = err2.Error()
-				formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
-				return
-			} else {
-				var loginId string
-				for {
-					loginId_uuid := uuid.NewV4()
-					loginId = loginId_uuid.String()
-					s,_ := service.UserInfoService.UserHasLogin(loginId)
-					if s == nil {
-						break
-					}
+			var loginId string
+			for {
+				loginId_uuid := uuid.NewV4()
+				loginId = loginId_uuid.String()
+				s,_ := service.UserInfoService.UserHasLogin(loginId)
+				if s == nil {
+					break
 				}
-				service.UserInfoService.LoginInfoInsert(entity.Session{LoginId:loginId, CurrentUser:user.Username})
-				set_cookie := http.Cookie{Name: "LoginId", Value: loginId, Path: "/", MaxAge: 86400}
-				http.SetCookie(w, &set_cookie)
-				formatter.JSON(w, http.StatusOK, successMsg)
 			}
+			err5 := service.UserInfoService.LoginInfoInsert(entity.Session{LoginId:loginId, CurrentUser:user.Username})
+			if err5 != nil {
+				failMsg.Data.Error = "[LoginHandler][LoginInfoInsert]:"+err5.Error()
+				formatter.JSON(w, http.StatusBadRequest, failMsg)
+				return
+			}
+			set_cookie := http.Cookie{Name: "LoginId", Value: loginId}
+			http.SetCookie(w, &set_cookie)
+			var loginMsg struct{
+				Message string
+				Data string
+			}
+			loginMsg.Message = "login success"
+			loginMsg.Data = set_cookie.Value
+			formatter.JSON(w, http.StatusOK, loginMsg)
+			return
 		}
 	}
 }
@@ -126,18 +134,13 @@ func logoutHandler(formatter *render.Render) http.HandlerFunc{
 		cookie, err := req.Cookie("LoginId")
 		if err != nil{
 			failMsg.Data.Error = err.Error()
-			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			formatter.JSON(w, http.StatusUnauthorized, failMsg)
 			return
 		}
-		session,err1 := service.UserInfoService.UserHasLogin(cookie.Value)
-		if err1 != nil{
-			failMsg.Data.Error = err1.Error()
-			formatter.JSON(w, http.StatusBadRequest, failMsg)
-			return
-		}
+		session,_ := service.UserInfoService.UserHasLogin(cookie.Value)
 		if session != nil {
 			service.UserInfoService.LoginInfoDelete(*session)
-			del_cookie := http.Cookie{Name: "LoginId", Path: "/", MaxAge: -1}
+			del_cookie := http.Cookie{Name: "LoginId"}
 			http.SetCookie(w, &del_cookie)
 			formatter.JSON(w, http.StatusOK, successMsg)
 			return

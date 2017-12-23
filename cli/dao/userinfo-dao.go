@@ -116,18 +116,15 @@ func (dao *UserInfoDao) LoginInfoDelete (session entity.Session) error {
 }
 
 //get all users' infomation
-var getAllUsersInfoStmt = "SELECT * FROM User where Username != ?"
+var getAllUsersInfoStmt = "SELECT * FROM User"
 // FindByUsername
 func (dao *UserInfoDao) GetAllUsersInfo(session entity.Session) ([]entity.User, error) {
     if login, _ := dao.UserHasLogin(session.LoginId); login == nil {
         err := errors.New("you haven't log in! please log in first!")
         return nil, err
     }
-    stmt, err := dao.Prepare(userInfoQueryByUsernameStmt)
-    entity.CheckErr(err)
-    defer stmt.Close()
 
-    rows, err := stmt.Query("")
+    rows, err := dao.Query(getAllUsersInfoStmt)
     defer rows.Close()
     entity.CheckErr(err)
     if err != nil {
