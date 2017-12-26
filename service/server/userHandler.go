@@ -113,7 +113,7 @@ func loginHandler(formatter *render.Render) http.HandlerFunc{
 				formatter.JSON(w, http.StatusBadRequest, failMsg)
 				return
 			}
-			set_cookie := http.Cookie{Name: "LoginId", Value: loginId}
+			set_cookie := http.Cookie{Name: "LoginId", Value: loginId, Path: "/"}
 			http.SetCookie(w, &set_cookie)
 			var loginMsg struct{
 				Message string
@@ -214,7 +214,7 @@ func queryUsersHandler(formatter *render.Render) http.HandlerFunc{
 		}
 		session,err1 := service.UserInfoService.UserHasLogin(cookie.Value)
 		if err1 != nil{
-			failMsg.Data.Error = err1.Error()
+			failMsg.Data.Error = err1.Error() + "aaa"
 			formatter.JSON(w, http.StatusBadRequest, failMsg)
 			return
 		}

@@ -43,6 +43,7 @@ func init() {
 
     db.Exec(sqlCreateUserTable)
     db.Exec(sqlCreateSessionTable)
+    db.Exec(sqlCreateMeetingTable)
     Mydb = db
 }
 
