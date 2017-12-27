@@ -114,7 +114,7 @@ func loginHandler(formatter *render.Render) http.HandlerFunc{
 				formatter.JSON(w, http.StatusBadRequest, failMsg)
 				return
 			}
-			set_cookie := http.Cookie{Name: "LoginId", Value: loginId, Path: "/"}
+			set_cookie := http.Cookie{Name: "LoginId", Value: loginId, Path: "/api/agenda/"}
 			http.SetCookie(w, &set_cookie)
 			var loginMsg struct{
 				Message string
