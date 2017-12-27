@@ -141,7 +141,7 @@ func (dao *MeetingInfoDao) GetMeetingByID(id string) (*entity.Meeting, error)  {
 var getMeetingByTitle = "select * from Meeting where Title = ?"
 func (dao *MeetingInfoDao) GetMeetingByTitle(title string) (*entity.Meeting, error)  {
 	var meeting = entity.Meeting{}
-    stmt, err := dao.Prepare(getMeetingByID)
+    stmt, err := dao.Prepare(getMeetingByTitle)
 	entity.CheckErr(err)
 	if err != nil {
         return nil, err

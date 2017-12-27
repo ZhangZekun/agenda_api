@@ -84,26 +84,145 @@ func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc{
 }
 
 func deleteParticipatorsHandler(formatter *render.Render) http.HandlerFunc{
-	return func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, req *http.Request){
 		
 	}
 }
 
 func cncelMeetingHandler(formatter *render.Render) http.HandlerFunc{
-	return func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, req *http.Request){
+		successMsg.Message = "cancle a meeting success"
+		failMsg.Message = "cancle a meeting fail"
 		
+		//check if login
+		cookie, err := req.Cookie("LoginId")
+		if err != nil{
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		session,err1 := service.UserInfoService.UserHasLogin(cookie.Value)
+		if err1 != nil{
+			failMsg.Data.Error = err1.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+
+		//get the title name and delete it
+		path := req.URL.Path
+		pathSlice := strings.Split(path, "/")
+		title :=  pathSlice[len(pathSlice) - 1]
+		//if it's delete all meeting
+		if title == "all" {
+			fmt.Println("enter {title}")
+			return;
+		}
+		fmt.Println(title)
+		meeting, err3:= service.MeetingInfoService.FindByTitle(title)
+		if err3 != nil {
+			failMsg.Data.Error = err3.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		if meeting.Sponsor != session.CurrentUser {
+			failMsg.Data.Error = "The meeting's Sponsor is not you!"
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		err = service.MeetingInfoService.DeleteAMeetingByTitle(title)
+		if err != nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		formatter.JSON(w, http.StatusOK, successMsg)
 	}
 }
 
 func quitMeetingHandler(formatter *render.Render) http.HandlerFunc{
-	return func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, req *http.Request){
+		successMsg.Message = "quit a meeting success"
+		failMsg.Message = "quit a meeting fail"
 		
+		//check if login
+		cookie, err := req.Cookie("LoginId")
+		if err != nil{
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		session,err1 := service.UserInfoService.UserHasLogin(cookie.Value)
+		if err1 != nil{
+			failMsg.Data.Error = err1.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//get the meeting by title
+		path := req.URL.Path
+		pathSlice := strings.Split(path, "/")
+		title :=  pathSlice[len(pathSlice) - 1]
+		meeting, err3:= service.MeetingInfoService.FindByTitle(title)
+		if err3 != nil {
+			failMsg.Data.Error = err3.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		
+		//check if you are participants of the meeting
+		participants := meeting.Participants.String
+		if !strings.Contains(participants, session.CurrentUser) {
+			failMsg.Data.Error = "you are not participants of the meeting!"
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		participantSlice := strings.Split(participants, "&")
+		resultParticipantsSlice := make([]string, 0)
+		for _, person := range participantSlice {
+			if person != session.CurrentUser {
+				resultParticipantsSlice = append(resultParticipantsSlice, person)
+			}
+		}
+		resultParticipantsString := strings.Join(resultParticipantsSlice, "&")
+		err = service.MeetingInfoService.UpdateMeetingParticipants(title, resultParticipantsString)
+		if err != nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		formatter.JSON(w, http.StatusOK, successMsg)
 	}
 }
 
 func deleteAllMeetingHandler(formatter *render.Render) http.HandlerFunc{
-	return func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, req *http.Request){
+		fmt.Println("enter {all}")
+		successMsg.Message = "cancle sponsor meetings success"
+		failMsg.Message = "cancle sponsor meetings fail"
 		
+		//check if login
+		cookie, err := req.Cookie("LoginId")
+		if err != nil{
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		session,err1 := service.UserInfoService.UserHasLogin(cookie.Value)
+		if err1 != nil{
+			failMsg.Data.Error = err1.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+
+		//delete all sponsor meetings
+		err = service.MeetingInfoService.DeleteAllSponsorMeeting(session.CurrentUser)
+		if err != nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		formatter.JSON(w, http.StatusOK, successMsg)
+	
 	}
 }
 
