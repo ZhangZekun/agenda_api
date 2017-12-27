@@ -45,6 +45,24 @@ func (dao *UserInfoDao) InsertUser(user entity.User) error {
     return nil
 }
 
+//delete a user
+var userDeleteStmt = "delete from User where Username = ?"
+func (dao *UserInfoDao) DeleteUser(name string) error {
+    stmt, err := dao.Prepare(userDeleteStmt)
+	entity.CheckErr(err)
+	if err != nil {
+        return err
+    }
+    defer stmt.Close()
+
+	_, err2 := stmt.Exec(name)
+    entity.CheckErr(err2)
+    if err2 != nil {
+        return err2
+    }
+    return nil
+}
+
 //determine whether a user has been logged in by username or not
 var UserHasLoginStmt = "SELECT * FROM LoginUsers where LoginId = ?"
 func (dao *UserInfoDao) UserHasLogin(loginId string) (*entity.Session, error) {

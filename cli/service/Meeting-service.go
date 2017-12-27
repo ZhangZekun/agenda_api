@@ -62,6 +62,8 @@ func ( *MeetingInfoAtomicService) DeleteAllSponsorMeeting(name string ) error {
     }
     return nil
 }
+
+
 //update meeting participants
 func (*MeetingInfoAtomicService) UpdateMeetingParticipants(title, Participants string) error {
 	tx, err := entity.Mydb.Begin()
@@ -83,6 +85,12 @@ func (*MeetingInfoAtomicService) UpdateMeetingParticipants(title, Participants s
 func (*MeetingInfoAtomicService) GetAllRelativeMeeting(name string) ([]entity.Meeting, error) {
     dao := dao.MeetingInfoDao{entity.Mydb}
     return dao.GetAllRelativeMeeting(name)
+}
+
+//get all participants meetings
+func (*MeetingInfoAtomicService) GetAllParticipantsMeeting(name string) ([]entity.Meeting, error) {
+    dao := dao.MeetingInfoDao{entity.Mydb}
+    return dao.GetAllParticipantsMeeting(name)
 }
 
 //get all relative meetings between startime and endtime

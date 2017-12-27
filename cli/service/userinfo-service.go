@@ -36,6 +36,23 @@ func (*UserInfoAtomicService) InsertUser(user entity.User) error {
     return nil
 }
 
+//delete a User
+func (*UserInfoAtomicService) DeleteUser(name string) error {
+    tx, err := entity.Mydb.Begin()
+    entity.CheckErr(err)
+
+    dao := dao.UserInfoDao{tx}
+    err = dao.DeleteUser(name)
+
+    if err == nil {
+        tx.Commit()
+    } else {
+		tx.Rollback()
+		return err;
+    }
+    return nil
+}
+
 //Insert Login Info 
 func (*UserInfoAtomicService) LoginInfoInsert(session entity.Session) error {
     tx, err := entity.Mydb.Begin()

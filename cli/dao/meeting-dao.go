@@ -79,6 +79,25 @@ func (dao *MeetingInfoDao) UpdateMeetingParticipants(title, Participants string)
     return nil
 }
 
+//get all participant meeting
+func (dao *MeetingInfoDao) GetAllParticipantsMeeting(name string) ([]entity.Meeting, error)  {
+	stmt := "select * from Meeting where Participants like '%" + name + "%'"
+	rows, _ := dao.Query(stmt)
+	defer rows.Close()
+	var meetingSlice = make([]entity.Meeting, 0)
+	for rows.Next() {
+		var meeting = entity.Meeting{}
+		err := rows.Scan(&meeting.Id, &meeting.Title, &meeting.Sponsor, &meeting.Participants, &meeting.StartTime, &meeting.EndTime)
+        meetingSlice = append(meetingSlice, meeting)
+        entity.CheckErr(err)
+        if err != nil {
+            return nil, err
+        }
+	}
+    return meetingSlice, nil
+}
+
+
 //get all relative meeting
 var getAllRelativeMeetingStmt = "select * from Meeting where Sponsor = ? or Participants like '%zhangzemian%'"
 func (dao *MeetingInfoDao) GetAllRelativeMeeting(name string) ([]entity.Meeting, error)  {

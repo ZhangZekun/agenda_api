@@ -3,6 +3,7 @@ package server
 import (
 	"database/sql"
 	"encoding/json"
+	"strings"
 	"net/http"
 	"github.com/unrolled/render"
 	"agenda_api/cli/service"
@@ -189,7 +190,67 @@ func registerHandler(formatter *render.Render) http.HandlerFunc{
 
 func deleteUserHandler(formatter *render.Render) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
+		successMsg.Message = "delete a User success"
+		failMsg.Message = "delete a User fail"
 		
+		//check if login
+		cookie, err := req.Cookie("LoginId")
+		if err != nil{
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		session,err1 := service.UserInfoService.UserHasLogin(cookie.Value)
+		if err1 != nil{
+			failMsg.Data.Error = err1.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		//delete all sponsor meetings
+		if err = service.MeetingInfoService.DeleteAllSponsorMeeting(session.CurrentUser); err != nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//delete all participants meetings
+		meetingList, err2 := service.MeetingInfoService.GetAllParticipantsMeeting(session.CurrentUser)
+		if err2 != nil {
+			failMsg.Data.Error = err2.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		for _, meeting := range meetingList {
+			participants := meeting.Participants.String
+			participantSlice := strings.Split(participants, "&")
+			resultParticipantsSlice := make([]string, 0)
+			for _, person := range participantSlice {
+				if person != session.CurrentUser {
+					resultParticipantsSlice = append(resultParticipantsSlice, person)
+				}
+			}
+			resultParticipantsString := strings.Join(resultParticipantsSlice, "&")
+			err = service.MeetingInfoService.UpdateMeetingParticipants(meeting.Title, resultParticipantsString)
+			if err != nil {
+				failMsg.Data.Error = err.Error()
+				formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+				return
+			}
+		}
+
+		//logout
+		if err := service.UserInfoService.LoginInfoDelete(*session); err != nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		//delete user
+		if err := service.UserInfoService.DeleteUser(session.CurrentUser); err != nil{
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		formatter.JSON(w, http.StatusOK, successMsg)
 	}
 }
 
