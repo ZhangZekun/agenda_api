@@ -78,14 +78,167 @@ func createMeetingHandler(formatter *render.Render) http.HandlerFunc{
 }
 
 func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc{
-	return func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, req *http.Request){
+		successMsg.Message = "delete a participator from meeting success"
+		failMsg.Message = "delete a participator from  a meeting fail"
 		
+		//check if login
+		cookie, err := req.Cookie("LoginId")
+		if err != nil{
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		session,err1 := service.UserInfoService.UserHasLogin(cookie.Value)
+		if err1 != nil{
+			failMsg.Data.Error = err1.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+
+		//check if the participator exits
+		var reqBody struct {
+			Username string
+		}
+		if err := json.NewDecoder(req.Body).Decode(&reqBody); err != nil{
+			failMsg.Data.Error = "[queryMeetingHandler][DecodeRequest]:"+err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		fmt.Println(reqBody.Username)
+		if User, err := service.UserInfoService.FindByUsername(reqBody.Username); err != nil || User ==nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//get the title name and the meeting
+		path := req.URL.Path
+		pathSlice := strings.Split(path, "/")
+		title :=  pathSlice[len(pathSlice) - 2]
+		fmt.Println(title)
+		meeting, err3:= service.MeetingInfoService.FindByTitle(title)
+		if err3 != nil {
+			failMsg.Data.Error = err3.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		
+		//check if the login user is sponsor of the meeting
+		if session.CurrentUser != meeting.Sponsor {
+			failMsg.Data.Error = "you are not Sponsor of the meeting!"
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//check if the user that will be added have been a participator of the meeting
+		if strings.Contains(meeting.Participants.String, reqBody.Username) {
+			failMsg.Data.Error = "The user has been a participator of the meeting! No need to add"
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//check if the user that will be added have time conflict
+		meetingList, err := service.MeetingInfoService.GetAllMeetingBetweenStartTimeAndEndTimeOfSomeone(reqBody.Username, meeting.StartTime, meeting.EndTime)
+		if err == nil && len(meetingList) != 0 {
+			failMsg.Data.Error = "The user: " + reqBody.Username + " have time conflict" 
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//update the meeting
+		participants := meeting.Participants.String
+		participantSlice := strings.Split(participants, "&")
+		resultParticipantsSlice := append(participantSlice, reqBody.Username)
+		resultParticipantsString := strings.Join(resultParticipantsSlice, "&")
+		err = service.MeetingInfoService.UpdateMeetingParticipants(title, resultParticipantsString)
+		if err != nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		formatter.JSON(w, http.StatusOK, successMsg)
 	}
 }
 
 func deleteParticipatorsHandler(formatter *render.Render) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
+		successMsg.Message = "delete a participator from meeting success"
+		failMsg.Message = "delete a participator from  a meeting fail"
 		
+		//check if login
+		cookie, err := req.Cookie("LoginId")
+		if err != nil{
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		session,err1 := service.UserInfoService.UserHasLogin(cookie.Value)
+		if err1 != nil{
+			failMsg.Data.Error = err1.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+
+		//check if the participator exits
+		var reqBody struct {
+			Username string
+		}
+		if err := json.NewDecoder(req.Body).Decode(&reqBody); err != nil{
+			failMsg.Data.Error = "[queryMeetingHandler][DecodeRequest]:"+err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		fmt.Println(reqBody.Username)
+		if User, err := service.UserInfoService.FindByUsername(reqBody.Username); err != nil || User ==nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//get the title name and the meeting
+		path := req.URL.Path
+		pathSlice := strings.Split(path, "/")
+		title :=  pathSlice[len(pathSlice) - 2]
+		fmt.Println(title)
+		meeting, err3:= service.MeetingInfoService.FindByTitle(title)
+		if err3 != nil {
+			failMsg.Data.Error = err3.Error()
+			formatter.JSON(w, http.StatusBadRequest, failMsg)
+			return
+		}
+		
+		//check if the login user is sponsor of the meeting
+		if session.CurrentUser != meeting.Sponsor {
+			failMsg.Data.Error = "you are not Sponsor of the meeting!"
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//check if the user that will be delete is participator of the meeting
+		participants := meeting.Participants.String
+		if !strings.Contains(participants, reqBody.Username) {
+			failMsg.Data.Error = "The user is not participator of the meeting!"
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+
+		//update the meeting
+		participantSlice := strings.Split(participants, "&")
+		resultParticipantsSlice := make([]string, 0)
+		for _, person := range participantSlice {
+			if person != reqBody.Username {
+				resultParticipantsSlice = append(resultParticipantsSlice, person)
+			}
+		}
+		resultParticipantsString := strings.Join(resultParticipantsSlice, "&")
+		err = service.MeetingInfoService.UpdateMeetingParticipants(title, resultParticipantsString)
+		if err != nil {
+			failMsg.Data.Error = err.Error()
+			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
+			return
+		}
+		formatter.JSON(w, http.StatusOK, successMsg)
 	}
 }
 
@@ -253,8 +406,8 @@ func queryMeetingHandler(formatter *render.Render) http.HandlerFunc{
 
 		//query the meeting
 		var reqBody struct {
-			StartTime string
-			EndTime string
+			StartTime time.Time
+			EndTime time.Time
 		}
 	//	fmt.Println(reqBody.StartTime, reqBody.EndTime)
 		if err := json.NewDecoder(req.Body).Decode(&reqBody); err != nil{
@@ -262,12 +415,12 @@ func queryMeetingHandler(formatter *render.Render) http.HandlerFunc{
 			formatter.JSON(w, http.StatusUnprocessableEntity, failMsg)
 			return
 		}
-		fmt.Println(reqBody.StartTime, reqBody.EndTime)
-		startTime, _ := String_to_date(reqBody.StartTime + "/00:00")
-		endTime, _ :=  String_to_date(reqBody.EndTime + "/00:00")
-		fmt.Println(startTime, endTime)
-		fmt.Println(session.CurrentUser)
-		meetingList, err := service.MeetingInfoService.GetAllMeetingBetweenStartTimeAndEndTimeOfSomeone(session.CurrentUser, startTime, endTime)
+		// fmt.Println(reqBody.StartTime, reqBody.EndTime)
+		// startTime, _ := String_to_date(reqBody.StartTime + "/00:00")
+		// endTime, _ :=  String_to_date(reqBody.EndTime + "/00:00")
+		// fmt.Println(startTime, endTime)
+		// fmt.Println(session.CurrentUser)
+		meetingList, err := service.MeetingInfoService.GetAllMeetingBetweenStartTimeAndEndTimeOfSomeone(session.CurrentUser, reqBody.StartTime, reqBody.EndTime)
 		fmt.Println(meetingList)
 		if err != nil{
 			failMsg.Data.Error = err.Error()
