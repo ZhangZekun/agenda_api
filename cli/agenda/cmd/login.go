@@ -19,7 +19,6 @@ import (
 	"os"
 	"net/http"
 	"fmt"
-	"io/ioutil"
 	"encoding/json"
 	"github.com/spf13/cobra"
 	"strings"
@@ -35,77 +34,28 @@ var loginCmd = &cobra.Command{
 		fmt.Println("login called")
 		username, _ := cmd.Flags().GetString("username")
 		password, _ := cmd.Flags().GetString("password")
-
+		//set request
 		client := &http.Client{}
 		reqBody := "{"+"\"Username\":\"" + username +"\", \"Password\":\"" + password + "\"}"
 		req, err := http.NewRequest("POST", "http://localhost:8080/api/agenda/user/login", strings.NewReader(reqBody))
 		if err != nil {
 			fmt.Println("err when create the login request")
 		}
-	
-		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-//		req.Header.Set("Cookie", "name=anny")
-		file1, error1 := os.Open("cookies.txt");
-		if error1 != nil {
-			fmt.Println(error1);
-		}
-		defer file1.Close();
-		buf := make([]byte, 4024);
-		byteNum, err1 := file1.Read(buf)
-		if err1 != nil {
-			fmt.Println(err1)
-			return
-		}
-		// var cookieSlice interface{}
-		var cookieSlice []http.Cookie
-		fmt.Println(string(buf[0:byteNum]))
-		if (byteNum != 0) {
-			err := json.Unmarshal(buf[0:byteNum], &cookieSlice)
-			if err != nil {
-				fmt.Println(err.Error())
-				return
-			}
-		}
-		
-		for _, cookie := range cookieSlice {
-			fmt.Println(cookie)
-			if cookie.Name == "LoginId" && cookie.Path == "/api/agenda/" {
-				req.Header.Set("Cookie", "LoginId=" + cookie.Value)
-				fmt.Println("find cookie")
-				break
-			}
+		cookieId := GetCookieID()
+		if cookieId != "" {
+			req.Header.Set("Cookie", "LoginId="+cookieId)
 		}
 
-		resp, err := client.Do(req)
+		//send request and output response body
+		resp, err := SendRequestAndOutputResponseBody(req, client)
 		if err != nil {
-			fmt.Println(err)
-			return
+			fmt.Println(err.Error());
 		}
-
-		//output the response body
-		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(string(body))
 
 		//save cookies pass by the server
-		cookies := resp.Cookies()
-		if len(cookies) != 0 {
-			byteData, _ := json.Marshal(cookies)
-			//写入文件
-			file, error := os.Create("cookies.txt");
-			defer file.Close()
-			if error != nil {
-				fmt.Println(error);
-			}
-			file.Write(byteData)
+		if err:=saveCookies(resp); err != nil {
+			fmt.Println(err)
 		}
-		
-	//	fmt.Println(byteData)
-
 	},
 }
 
@@ -122,4 +72,19 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// loginCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func saveCookies(resp *http.Response) error {
+	cookies := resp.Cookies()
+	if len(cookies) != 0 {
+		byteData, _ := json.Marshal(cookies)
+		//写入文件
+		file, error := os.Create("cookies.txt");
+		defer file.Close()
+		if error != nil {
+			return error
+		}
+		file.Write(byteData)
+	}
+	return nil
 }
