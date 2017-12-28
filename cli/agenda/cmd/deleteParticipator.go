@@ -22,23 +22,23 @@ import (
 )
 
 // operateParticipantCmd represents the operateParticipant command
-var addParticipatorCmd = &cobra.Command{
-	Use:   "addParticipator",
-	Short: "the sponsor of the meeting can add  in the meeting",
+var deleteParticipatorCmd = &cobra.Command{
+	Use:   "deleteParticipator",
+	Short: "the sponsor of the meeting can be deleted  in the meeting",
 	Long: `you need to input three arguments(title(t), operation(o), participants(p)).For example:
 	addCMD:./agenda operateParticipant -t=Work -o=add -p=zhangzekun, zhangzhijian;
 	deleteCMD:./agenda operateParticipant -t=Work -o=del -p=zhangzekun,zhangzhijian`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("addParticipator called")
+		fmt.Println("deleteParticipator called")
 		title, _ := cmd.Flags().GetString("title")
 		participator, _:= cmd.Flags().GetString("participants")
 		//set request
 		client := &http.Client{}
 		reqBody := fmt.Sprintf("{\"Username\":\"%s\"}",participator)	
 		fmt.Println(reqBody)
-		req, err := http.NewRequest("POST", "http://localhost:8080/api/agenda/meeting/"+title +"/participators", strings.NewReader(reqBody))
+		req, err := http.NewRequest("DELETE", "http://localhost:8080/api/agenda/meeting/"+title +"/participators", strings.NewReader(reqBody))
 		if err != nil {
-			fmt.Println("err when create addParticipator request")
+			fmt.Println("err when create deleteParticipator request")
 		}
 		cookieId := GetCookieID()
 		if cookieId != "" {
@@ -54,9 +54,9 @@ var addParticipatorCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(addParticipatorCmd)
-	addParticipatorCmd.Flags().StringP("title", "t", "", "title")
-	addParticipatorCmd.Flags().StringP("participants", "p", "", "Names of Participants")
+	RootCmd.AddCommand(deleteParticipatorCmd)
+	deleteParticipatorCmd.Flags().StringP("title", "t", "", "title")
+	deleteParticipatorCmd.Flags().StringP("participants", "p", "", "Names of Participants")
 
 
 

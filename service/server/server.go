@@ -35,7 +35,7 @@ func initRoutes(mx *mux.Router, formatter *render.Render) {
 	//Meeting Hanndler
 	mx.HandleFunc("/api/agenda/meeting/createMeeting", createMeetingHandler(formatter)).Methods("POST")
 	mx.HandleFunc("/api/agenda/meeting/{title}/participators", addParticipatorsHandler(formatter)).Methods("POST")
-	mx.HandleFunc("/api/agenda/meeting/{title}/particioators", deleteParticipatorsHandler(formatter)).Methods("DELETE")
+	mx.HandleFunc("/api/agenda/meeting/{title}/participators", deleteParticipatorsHandler(formatter)).Methods("DELETE")
 	mx.HandleFunc("/api/agenda/meeting", queryMeetingHandler(formatter)).Methods("POST")
 	mx.HandleFunc("/api/agenda/meeting/sponsor/all", deleteAllMeetingHandler(formatter)).Methods("DELETE")	
 	mx.HandleFunc("/api/agenda/meeting/sponsor/{title}", cncelMeetingHandler(formatter)).Methods("DELETE")
