@@ -79,8 +79,8 @@ func createMeetingHandler(formatter *render.Render) http.HandlerFunc{
 
 func addParticipatorsHandler(formatter *render.Render) http.HandlerFunc{
 	return func(w http.ResponseWriter, req *http.Request){
-		successMsg.Message = "delete a participator from meeting success"
-		failMsg.Message = "delete a participator from  a meeting fail"
+		successMsg.Message = "add a participator from meeting success"
+		failMsg.Message = "add a participator from  a meeting fail"
 		
 		//check if login
 		cookie, err := req.Cookie("LoginId")
