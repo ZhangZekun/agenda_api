@@ -20,19 +20,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// cancelMeetingCmd represents the cancelMeeting command
-var cancelMeetingCmd = &cobra.Command{
-	Use:   "cancelMeeting",
-	Short: "to delete the meeting that user creates",
-	Long: `user should input the title of the meeting`,
+// deleteAllMeetingsCmd represents the deleteAllMeetings command
+var deleteAllMeetingsCmd = &cobra.Command{
+	Use:   "deleteAllMeetings",
+	Short: "delete all the meetings that user create",
+	Long: `you don't need to input anything.For example:
+	./agenda deleteAllMeetings`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("cancelMeeting called")
-		title, _ := cmd.Flags().GetString("title")
+		fmt.Println("deleteAllMeetings called")
 		//set request
 		client := &http.Client{}	
-		req, err := http.NewRequest("DELETE", "http://localhost:8080/api/agenda/meeting/sponsor/" + title, nil)
+		req, err := http.NewRequest("DELETE", "http://localhost:8080/api/agenda/meeting/sponsor/all", nil)
 		if err != nil {
-			fmt.Println("err when create cancleMeeting request")
+			fmt.Println("err when create deleteAllMeetings request")
 		}
 		cookieId := GetCookieID()
 		if cookieId != "" {
@@ -49,16 +49,15 @@ var cancelMeetingCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(cancelMeetingCmd)
-	cancelMeetingCmd.Flags().StringP("title", "t", "", "title")
+	RootCmd.AddCommand(deleteAllMeetingsCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// cancelMeetingCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// deleteAllMeetingsCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// cancelMeetingCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// deleteAllMeetingsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

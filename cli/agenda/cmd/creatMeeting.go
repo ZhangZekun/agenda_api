@@ -59,14 +59,9 @@ var createMeetingCmd = &cobra.Command{
 		}
 
 		//send request and output response body
-		resp, err := SendRequestAndOutputResponseBody(req, client)
+		_, err = SendRequestAndOutputResponseBody(req, client)
 		if err != nil {
 			fmt.Println(err.Error());
-		}
-
-		//save cookies pass by the server
-		if err:=saveCookies(resp); err != nil {
-			fmt.Println(err)
 		}
 	},
 }
