@@ -1,9 +1,9 @@
 package main
 
 import (
+	flag "github.com/spf13/pflag"
 	"os"
 	"github.com/ZhangZeMian/agenda_api/service/server"
-	flag "github.com/spf13/pflag"
 )
 
 const (
