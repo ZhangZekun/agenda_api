@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"time"
 	"github.com/unrolled/render"
-	"agenda_api/cli/service"
-	"agenda_api/cli/entity"
+	"github.com/ZhangZeMian/agenda_api/cli/service"
+	"github.com/ZhangZeMian/agenda_api/cli/entity"
 )
 
 func createMeetingHandler(formatter *render.Render) http.HandlerFunc{

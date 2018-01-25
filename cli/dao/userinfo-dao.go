@@ -1,7 +1,7 @@
 package dao
 import (
         "errors"
-        "agenda_api/cli/entity"
+        "github.com/ZhangZeMian/agenda_api/cli/entity"
     	)
 
 type UserInfoDao entity.DaoSource

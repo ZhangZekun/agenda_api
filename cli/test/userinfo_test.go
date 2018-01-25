@@ -2,8 +2,8 @@ package test
 
 import(
 	"testing"
-	"service"
-	"entity"
+	"github.com/ZhangZeMian/agenda_api/cli/service"
+	"github.com/ZhangZeMian/agenda_api/cli/entity"
 	"database/sql"
 )
 

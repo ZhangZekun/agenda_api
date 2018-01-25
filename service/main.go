@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"agenda_api/service/server"
+	"github.com/ZhangZeMian/agenda_api/service/server"
 	flag "github.com/spf13/pflag"
 )
 

@@ -2,7 +2,7 @@ package main
 
 import(
 //	"agenda_api/cli/entity"
-	"agenda_api/cli/service"
+	"github.com/ZhangZeMian/agenda_api/cli/service"
 	"fmt"
 	"time"
 )

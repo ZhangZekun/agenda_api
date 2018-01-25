@@ -3,7 +3,7 @@ import (
 	"fmt"
 //		"errors"
 		"time"
-		"agenda_api/cli/entity"
+		"github.com/ZhangZeMian/agenda_api/cli/entity"
 	)
 
 type MeetingInfoDao entity.DaoSource
