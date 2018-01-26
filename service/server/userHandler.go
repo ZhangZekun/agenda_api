@@ -101,7 +101,7 @@ func loginHandler(formatter *render.Render) http.HandlerFunc{
 		if user!= nil && user.Password == reqBody.Password{
 			var loginId string
 			for {
-				loginId_uuid := uuid.NewV4()
+				loginId_uuid, _ := uuid.NewV4()
 				loginId = loginId_uuid.String()
 				s,_ := service.UserInfoService.UserHasLogin(loginId)
 				if s == nil {
