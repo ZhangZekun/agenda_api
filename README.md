@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ZhangZekun/agenda_api.svg?branch=master)](https://travis-ci.org/ZhangZekun/agenda_api)
+
 # Agenda
 
 ## 如何使用我们的镜像
